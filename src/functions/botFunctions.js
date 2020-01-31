@@ -1,6 +1,7 @@
 const { bot } = require("../bot.js")
 const axios = require("axios")
 const util = require("./utilFunctions.js")
+const fs = require("fs")
 
 const botFuncs = {
 	ping: ({ channelID }) => {
