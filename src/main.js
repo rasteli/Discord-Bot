@@ -1,9 +1,14 @@
 const { bot } = require("./bot.js")
 const { botFuncs } = require("./functions/botFunctions.js")
 const { markdownText } = require("./functions/utilFunctions.js")
-const { readFile } = require("./utils/ReadAndWriteFile")
+const fs = require("fs")
 
-const sufix = readFile()
+let sufix = ""
+fs.readFile("./src/JSON/ignite.json", "utf-8", (error, data) => {
+	if (error) return
+	const json = JSON.parse(data)
+	sufix = json.ignite
+})
 
 bot.on("ready", () => {
 	if (bot.connected) console.log(`Logged in as: ${bot.username}`)

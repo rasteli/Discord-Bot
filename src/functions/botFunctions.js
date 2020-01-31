@@ -1,7 +1,6 @@
 const { bot } = require("../bot.js")
 const axios = require("axios")
 const util = require("./utilFunctions.js")
-const { writeFile } = require("../utils/ReadAndWriteFile")
 
 const botFuncs = {
 	ping: ({ channelID }) => {
@@ -30,7 +29,6 @@ const botFuncs = {
 		})
 	},
 
-	//? Sometimes takes a while to send messages. Perhaps fix it?
 	msgme: ({ msgString, userID }) => {
 		bot.sendMessage({
 			to: userID,
@@ -81,7 +79,13 @@ const botFuncs = {
 					ignite: msgString
 				}
 
-				writeFile(sufix)
+				fs.writeFile(
+					"./src/JSON/ignite.json",
+					JSON.stringify(sufix),
+					error => {
+						if (error) return
+					}
+				)
 
 				bot.sendMessage({
 					to: channelID,
