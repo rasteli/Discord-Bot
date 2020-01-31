@@ -3,3 +3,5 @@ node_modules/
 src/JSON/auth.json
 
 yarn.lock
+
+README.md
