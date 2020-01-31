@@ -1,7 +1,7 @@
 const { bot } = require("../bot.js")
 const axios = require("axios")
-const fs = require("fs")
 const util = require("./utilFunctions.js")
+const { writeFile } = require("../utils/ReadAndWriteFile")
 
 const botFuncs = {
 	ping: ({ channelID }) => {
@@ -81,13 +81,7 @@ const botFuncs = {
 					ignite: msgString
 				}
 
-				fs.writeFile(
-					"./src/JSON/ignite.json",
-					JSON.stringify(sufix),
-					error => {
-						if (error) return
-					}
-				)
+				writeFile(sufix)
 
 				bot.sendMessage({
 					to: channelID,

@@ -1,19 +1,12 @@
 const { bot } = require("./bot.js")
 const { botFuncs } = require("./functions/botFunctions.js")
 const { markdownText } = require("./functions/utilFunctions.js")
-const fs = require("fs")
+const { readFile } = require("./utils/ReadAndWriteFile")
 
-let sufix = ""
-
-fs.readFile("./src/JSON/ignite.json", "utf-8", (error, data) => {
-	if (error) return
-	const json = JSON.parse(data)
-	sufix = json.ignite
-})
+const sufix = readFile()
 
 bot.on("ready", () => {
 	if (bot.connected) console.log(`Logged in as: ${bot.username}`)
-	//console.log(bot.servers["670254632475557901"].members)
 })
 
 //TODO find a way to add the serverID and channelID dynamically
