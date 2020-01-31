@@ -4,6 +4,7 @@ const { markdownText } = require("./functions/utilFunctions.js")
 const fs = require("fs")
 
 let sufix = ""
+
 fs.readFile("./src/JSON/ignite.json", "utf-8", (error, data) => {
 	if (error) return
 	const json = JSON.parse(data)
