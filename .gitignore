@@ -1,1 +1,5 @@
+yarn.lock
+
 node_modules/
+
+src/JSON/auth.json
