@@ -38,8 +38,21 @@ function checkVerification(serverid, userID) {
 	}
 }
 
+function returnBotCount() {
+	let bots = 0
+
+	for (const member in bot.users) {
+		const user = bot.users[member]
+
+		if (user.bot) bots++
+	}
+
+	return bots
+}
+
 module.exports = {
 	returnServerId,
 	checkHighRole,
-	checkVerification
+	checkVerification,
+	returnBotCount
 }

@@ -3,35 +3,37 @@
 	"help": [
 		{
 			"name": "` list `",
-			"value": "you already know its purpose."
+			"value": "You already know its purpose."
 		},
+
 		{
-			"name": "` ping `",
-			"value": "returns Pong!"
+			"name": "` getMembers `",
+			"value": "Returns all server users."
 		},
-		{
-			"name": "` getUsers `",
-			"value": "returns all server users."
-		},
+
 		{
 			"name": "` serverInfo `",
-			"value": "returns current server info."
+			"value": "Returns current server info."
 		},
+
 		{
 			"name": "` github <github username> `",
-			"value": "returns the user's github profile link."
+			"value": "Returns the user's github profile link."
 		},
+
 		{
 			"name": "` kick <user id> `",
-			"value": "kicks some shity boi!"
+			"value": "Kicks some shity boi!"
 		},
+
 		{
 			"name": "` msgme <message> `",
-			"value": "returns a <message> to user's DM."
+			"value": "Returns a <message> to user's DM."
 		},
+
 		{
-			"name": "` sufix <new sufix> `",
-			"value": "changes the sufix used to summon Laveo."
+			"name": "` prefix <new prefix> `",
+			"value": "Changes the prefix used to summon Laveo."
 		}
 	]
 }

@@ -4,16 +4,6 @@ const util = require("./utilFunctions.js")
 const fs = require("fs")
 
 const botFuncs = {
-	ping: ({ channelID }) => {
-		bot.sendMessage({
-			to: channelID,
-			embed: {
-				color: 7419530,
-				title: "Pong!"
-			}
-		})
-	},
-
 	list: ({ channelID, userID }) => {
 		fs.readFile("./src/JSON/help.json", "utf-8", (err, data) => {
 			if (err) return
@@ -30,7 +20,12 @@ const botFuncs = {
 					color: 7419530,
 					title,
 					description: `<@${userID}>`,
-					fields: commands
+					fields: commands,
+					footer: {
+						text: "Commands",
+						icon_url:
+							"https://cdn.discordapp.com/embed/avatars/0.png"
+					}
 				}
 			})
 		})
@@ -65,17 +60,18 @@ const botFuncs = {
 		})
 	},
 
-	getUsers: ({ channelID, userID }) => {
+	getMembers: ({ channelID, userID }) => {
 		let res = ""
 
 		for (const member in bot.users) {
 			const user = bot.users[member]
 
-			if (!user.bot) {
-				const username = user.username
+			const username = user.username
 
-				res += `${username}\n`
-			}
+			const botEmoji = ":robot:"
+			const personEmoji = ":bust_in_silhouette:"
+
+			res += `${user.bot ? botEmoji : personEmoji} ${username}\n\n`
 		}
 
 		bot.sendMessage({
@@ -156,26 +152,38 @@ const botFuncs = {
 		}
 	},
 
-	serverInfo: ({ channelID, userID }) => {
+	serverInfo: ({ channelID }) => {
+		const bots = util.returnBotCount()
 		const serverid = util.returnServerId(channelID)
-		const server = bot.servers[serverid]
 		const joiningTime = server.joined_at.substring(0, 10)
+		const server = bot.servers[serverid]
 
-		const info =
-			`Server name: ${server.name}\n` +
-			`Server ID: ${server.id}\n` +
-			`${server.member_count - 1} members\n` +
-			`Laveo joined at ${joiningTime}`
+		const info = {
+			name: server.name,
+			id: server.id,
+			memberCount: server.member_count - bots,
+			joiningTime
+		}
 
 		bot.sendMessage({
 			to: channelID,
 			embed: {
 				color: 7419530,
-				description: `<@${userID}>`,
+				title: ":robot: " + info.name.toUpperCase(),
 				fields: [
 					{
-						name: "Server Info",
-						value: info
+						name: ":computer: ID",
+						value: info.id
+					},
+
+					{
+						name: ":busts_in_silhouette: Member count",
+						value: info.memberCount + " users\n" + bots + " bots"
+					},
+
+					{
+						name: ":timer: Laveo joined at",
+						value: info.joiningTime
 					}
 				]
 			}
@@ -222,11 +230,6 @@ const botFuncs = {
 
 			const { name = login, bio, html_url, avatar_url } = apiResponse.data
 
-			const user = {
-				name,
-				bio
-			}
-
 			bot.sendMessage({
 				to: channelID,
 				embed: {
@@ -236,15 +239,23 @@ const botFuncs = {
 					fields: [
 						{
 							name: "Name",
-							value: user.name
+							value: name
 						},
+
 						{
 							name: "BIO",
-							value: user.bio
+							value: bio
 						}
 					],
+
 					thumbnail: {
 						url: avatar_url
+					},
+
+					footer: {
+						text: "github",
+						icon_url:
+							"https://img2.gratispng.com/20180704/uxe/kisspng-github-computer-icons-icon-design-desktop-wallpape-5b3d36142dd125.8636932415307381961877.jpg"
 					}
 				}
 			})
