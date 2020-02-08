@@ -1,13 +1,37 @@
 {
-	"help": {
-		"commands": "Laveo's Commands List",
-		"list": "list: you already know its purpose.",
-		"ping": "ping: returns Pong!",
-		"getUsers": "getUsers: returns all server users.",
-		"serverInfo": "serverInfo: returns current server info.",
-		"github": "github <github username>: returns the user's github profile link.",
-		"kick": "kick <userID>: kicks some shity boi!",
-		"msgme": "msgme <message>: returns a <message> to user's DM.",
-		"sufix": "sufix <new sufix>: changes the sufix used to summon Laveo."
-	}
+	"title": "Laveo's Commands List",
+	"help": [
+		{
+			"name": "` list `",
+			"value": "you already know its purpose."
+		},
+		{
+			"name": "` ping `",
+			"value": "returns Pong!"
+		},
+		{
+			"name": "` getUsers `",
+			"value": "returns all server users."
+		},
+		{
+			"name": "` serverInfo `",
+			"value": "returns current server info."
+		},
+		{
+			"name": "` github <github username> `",
+			"value": "returns the user's github profile link."
+		},
+		{
+			"name": "` kick <user id> `",
+			"value": "kicks some shity boi!"
+		},
+		{
+			"name": "` msgme <message> `",
+			"value": "returns a <message> to user's DM."
+		},
+		{
+			"name": "` sufix <new sufix> `",
+			"value": "changes the sufix used to summon Laveo."
+		}
+	]
 }

@@ -38,13 +38,8 @@ function checkVerification(serverid, userID) {
 	}
 }
 
-function markdownText(text) {
-	return `>>> ${"```"}${text}${"```"}`
-}
-
 module.exports = {
 	returnServerId,
 	checkHighRole,
-	checkVerification,
-	markdownText
+	checkVerification
 }

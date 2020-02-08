@@ -7,25 +7,31 @@ const botFuncs = {
 	ping: ({ channelID }) => {
 		bot.sendMessage({
 			to: channelID,
-			message: util.markdownText("Pong!")
+			embed: {
+				color: 7419530,
+				title: "Pong!"
+			}
 		})
 	},
 
-	list: ({ channelID }) => {
+	list: ({ channelID, userID }) => {
 		fs.readFile("./src/JSON/help.json", "utf-8", (err, data) => {
 			if (err) return
 
 			const json = JSON.parse(data)
-			let command = ""
 
-			for (const key in json.help) {
-				const help = json.help[key]
-				command += `${help}\n`
-			}
+			const title = json.title
+
+			const commands = json.help
 
 			bot.sendMessage({
 				to: channelID,
-				message: util.markdownText(command)
+				embed: {
+					color: 7419530,
+					title,
+					description: `<@${userID}>`,
+					fields: commands
+				}
 			})
 		})
 	},
@@ -33,7 +39,11 @@ const botFuncs = {
 	msgme: ({ msgString, userID }) => {
 		bot.sendMessage({
 			to: userID,
-			message: msgString
+			embed: {
+				color: 7419530,
+				title: "Hi!",
+				description: msgString
+			}
 		})
 	},
 
@@ -42,7 +52,10 @@ const botFuncs = {
 
 		bot.sendMessage({
 			to: msgString,
-			message: `${user} kicked you from ${bot.servers[serverid].name}`
+			embed: {
+				color: 7419530,
+				description: `${user} kicked you from ${bot.servers[serverid].name}`
+			}
 		})
 
 		//TODO fix: after kicking user, he's still true in server members' list while bot does not reconnect (manually restart server)
@@ -52,7 +65,7 @@ const botFuncs = {
 		})
 	},
 
-	getUsers: ({ channelID }) => {
+	getUsers: ({ channelID, userID }) => {
 		let res = ""
 
 		for (const member in bot.users) {
@@ -67,11 +80,20 @@ const botFuncs = {
 
 		bot.sendMessage({
 			to: channelID,
-			message: util.markdownText(`\n${res}\n`)
+			embed: {
+				color: 7419530,
+				description: `<@${userID}>`,
+				fields: [
+					{
+						name: "Users",
+						value: res
+					}
+				]
+			}
 		})
 	},
 
-	sufix: ({ msgString, channelID, userID }) => {
+	prefix: ({ msgString, channelID, userID }) => {
 		const serverid = util.returnServerId(channelID)
 
 		if (util.checkHighRole(serverid, userID)) {
@@ -90,45 +112,73 @@ const botFuncs = {
 
 				bot.sendMessage({
 					to: channelID,
-					message: util.markdownText(`Sufix changed to ${msgString}`)
+					embed: {
+						color: 7419530,
+						description: `<@${userID}>`,
+						fields: [
+							{
+								name: "---",
+								value: `Prefix changed to ${msgString}`
+							}
+						]
+					}
 				})
 			} else {
 				bot.sendMessage({
 					to: channelID,
-					message: util.markdownText("Sufix length must equal to 1.")
+					embed: {
+						color: 7419530,
+						description: `<@${userID}>`,
+						fields: [
+							{
+								name: "---",
+								value: "Prefix length must equal to 1."
+							}
+						]
+					}
 				})
 			}
 		} else {
 			bot.sendMessage({
 				to: channelID,
-				message: util.markdownText(
-					"You do not have permission to change the sufix."
-				)
+				embed: {
+					color: 7419530,
+					description: `<@${userID}>`,
+					fields: [
+						{
+							name: "---",
+							value:
+								"You do not have permission to change the prefix."
+						}
+					]
+				}
 			})
 		}
 	},
 
-	serverInfo: ({ channelID }) => {
+	serverInfo: ({ channelID, userID }) => {
 		const serverid = util.returnServerId(channelID)
 		const server = bot.servers[serverid]
 		const joiningTime = server.joined_at.substring(0, 10)
 
-		const info = {
-			name: `Server name: ${server.name}`,
-			id: `Server ID: ${server.id}`,
-			member: `${server.member_count - 1} members`,
-			join: `Joined at ${joiningTime}`
-		}
-
-		let res = ""
-
-		for (const i in info) {
-			res += `${info[i]}\n`
-		}
+		const info =
+			`Server name: ${server.name}\n` +
+			`Server ID: ${server.id}\n` +
+			`${server.member_count - 1} members\n` +
+			`Laveo joined at ${joiningTime}`
 
 		bot.sendMessage({
 			to: channelID,
-			message: util.markdownText(res)
+			embed: {
+				color: 7419530,
+				description: `<@${userID}>`,
+				fields: [
+					{
+						name: "Server Info",
+						value: info
+					}
+				]
+			}
 		})
 	},
 
@@ -150,7 +200,16 @@ const botFuncs = {
 		} else {
 			bot.sendMessage({
 				to: channelID,
-				message: util.markdownText("You're already verified!")
+				embed: {
+					color: 7419530,
+					description: `<@${userID}>`,
+					fields: [
+						{
+							name: "---",
+							value: "You're already verified."
+						}
+					]
+				}
 			})
 		}
 	},
@@ -161,28 +220,41 @@ const botFuncs = {
 				`https://api.github.com/users/${msgString}`
 			)
 
-			const { name = login, id, bio, html_url } = apiResponse.data
+			const { name = login, bio, html_url, avatar_url } = apiResponse.data
 
 			const user = {
-				name: `Name: ${name}`,
-				id: `ID: ${id}`,
-				bio: `BIO: ${bio}`
-			}
-
-			let response = ""
-
-			for (const info in user) {
-				response += `${user[info]}\n`
+				name,
+				bio
 			}
 
 			bot.sendMessage({
 				to: channelID,
-				message: util.markdownText(response) + html_url
+				embed: {
+					color: 7419530,
+					title: "Github profile",
+					url: html_url,
+					fields: [
+						{
+							name: "Name",
+							value: user.name
+						},
+						{
+							name: "BIO",
+							value: user.bio
+						}
+					],
+					thumbnail: {
+						url: avatar_url
+					}
+				}
 			})
 		} catch (error) {
 			bot.sendMessage({
 				to: channelID,
-				message: util.markdownText("User not found.")
+				embed: {
+					color: 7419530,
+					description: "User not found."
+				}
 			})
 		}
 	}

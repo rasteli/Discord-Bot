@@ -1,6 +1,5 @@
 const { bot } = require("./bot.js")
 const { botFuncs } = require("./functions/botFunctions.js")
-const { markdownText } = require("./functions/utilFunctions.js")
 const fs = require("fs")
 
 let sufix = ""
@@ -25,7 +24,17 @@ bot.on("guildMemberAdd", member => {
 
 	bot.sendMessage({
 		to: "670257456672145418", //** ChannelID
-		message: markdownText(`Type ${sufix}join to enjoy the whole server!`)
+		embed: {
+			color: 7419530,
+			title: "Welcome,",
+			description: `<@${member.id}>`,
+			fields: [
+				{
+					name: "---",
+					value: `Type ${sufix}join to enjoy the whole server!`
+				}
+			]
+		}
 	})
 })
 
@@ -46,9 +55,16 @@ bot.on("message", (user, userID, channelID, message, evt) => {
 		} else {
 			bot.sendMessage({
 				to: channelID,
-				message: markdownText(
-					`Unknown command. Type "${sufix}list" to see available commands.`
-				)
+				embed: {
+					color: 7419530,
+					description: `<@${userID}>`,
+					fields: [
+						{
+							name: "---",
+							value: `Unknown command. Type "${sufix}list" to see available commands.`
+						}
+					]
+				}
 			})
 		}
 	}
