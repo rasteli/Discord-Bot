@@ -2,38 +2,63 @@
 	"title": "Laveo's Commands List",
 	"help": [
 		{
-			"name": "` list `",
+			"name": "` flags `",
+			"value": "The way to use flags (< >, [])."
+		},
+
+		{
+			"name": "` say `",
+			"value": "Makes Laveo say something."
+		},
+
+		{
+			"name": "` commands `",
 			"value": "You already know its purpose."
 		},
 
 		{
-			"name": "` getMembers `",
+			"name": "` members `",
 			"value": "Returns all server users."
 		},
 
 		{
-			"name": "` serverInfo `",
+			"name": "` serverinfo `",
 			"value": "Returns current server info."
 		},
 
 		{
-			"name": "` github <github username> `",
+			"name": "` github `",
 			"value": "Returns the user's github profile link."
 		},
 
 		{
-			"name": "` kick <user id> `",
+			"name": "` kick `",
 			"value": "Kicks some shity boi!"
 		},
 
 		{
-			"name": "` msgme <message> `",
-			"value": "Returns a <message> to user's DM."
+			"name": "` msgme `",
+			"value": "Returns a message to user's DM."
 		},
 
 		{
-			"name": "` prefix <new prefix> `",
+			"name": "` prefix `",
 			"value": "Changes the prefix used to summon Laveo."
+		},
+
+		{
+			"name": "` addrole `",
+			"value": "Adds a server's role to bot's list."
+		},
+
+		{
+			"name": "` connect `",
+			"value": "Adds Laveo to a voice channel."
+		},
+
+		{
+			"name": "` disconnect `",
+			"value": "Removes Laveo from a voice channel."
 		}
 	]
 }

@@ -4,7 +4,32 @@ const util = require("./utilFunctions.js")
 const fs = require("fs")
 
 const botFuncs = {
-	list: ({ channelID, userID }) => {
+	flags: ({ channelID }) => {
+		bot.sendMessage({
+			to: channelID,
+			embed: {
+				color: 22679,
+				title: "How flags work",
+				fields: [
+					{
+						name: "Mandatory",
+						value: "`<parameter>`"
+					},
+
+					{
+						name: "Optional",
+						value: "`[parameter]`"
+					}
+				],
+				footer: {
+					text: "Commands",
+					icon_url: "https://cdn.discordapp.com/embed/avatars/0.png"
+				}
+			}
+		})
+	},
+
+	commands: ({ channelID, userID }) => {
 		fs.readFile("./src/JSON/help.json", "utf-8", (err, data) => {
 			if (err) return
 
@@ -16,10 +41,10 @@ const botFuncs = {
 
 			bot.sendMessage({
 				to: channelID,
+				message: `<@${userID}>`,
 				embed: {
-					color: 7419530,
-					title,
-					description: `<@${userID}>`,
+					color: 22679,
+					title: title,
 					fields: commands,
 					footer: {
 						text: "Commands",
@@ -31,36 +56,99 @@ const botFuncs = {
 		})
 	},
 
-	msgme: ({ msgString, userID }) => {
-		bot.sendMessage({
-			to: userID,
-			embed: {
-				color: 7419530,
-				title: "Hi!",
-				description: msgString
-			}
-		})
+	say: ({ userID, channelID, param, prefix, event: { d } }) => {
+		if (param.length == 0) {
+			bot.sendMessage({
+				to: channelID,
+				message: `<@${userID}>`,
+				embed: util.returnHelpEmbed({
+					prefix,
+					command: "say",
+					description: "Makes Laveo say something.",
+					message: "<message>",
+					example: "The cake is a lie!",
+					author: {
+						username: d.author.username,
+						discriminator: d.author.discriminator,
+						avatar: d.author.avatar,
+						id: d.author.id
+					}
+				})
+			})
+		} else {
+			bot.sendMessage({
+				to: channelID,
+				message: param
+			})
+		}
 	},
 
-	kick: ({ channelID, msgString, user }) => {
-		const serverid = util.returnServerId(channelID)
-
-		bot.sendMessage({
-			to: msgString,
-			embed: {
-				color: 7419530,
-				description: `${user} kicked you from ${bot.servers[serverid].name}`
-			}
-		})
-
-		//TODO fix: after kicking user, he's still true in server members' list while bot does not reconnect (manually restart server)
-		bot.kick({
-			serverID: serverid,
-			userID: msgString
-		})
+	msgme: ({ param, userID, channelID, prefix, event: { d } }) => {
+		if (param.length == 0) {
+			bot.sendMessage({
+				to: channelID,
+				message: `<@${userID}>`,
+				embed: util.returnHelpEmbed({
+					prefix,
+					command: "msgme",
+					description: "Returns a message to user's DM.",
+					message: "<message>",
+					example: "wassup?",
+					author: {
+						username: d.author.username,
+						discriminator: d.author.discriminator,
+						avatar: d.author.avatar,
+						id: d.author.id
+					}
+				})
+			})
+		} else {
+			bot.sendMessage({
+				to: userID,
+				message: param
+			})
+		}
 	},
 
-	getMembers: ({ channelID, userID }) => {
+	kick: ({ userID, channelID, param, user, prefix, event: { d } }) => {
+		if (param.length == 0) {
+			bot.sendMessage({
+				to: channelID,
+				message: `<@${userID}>`,
+				embed: util.returnHelpEmbed({
+					prefix,
+					command: "kick",
+					description: "Kicks some shity boi!",
+					message: "<userID>",
+					example: "657329094496616459",
+					author: {
+						username: d.author.username,
+						discriminator: d.author.discriminator,
+						avatar: d.author.avatar,
+						id: d.author.id
+					}
+				})
+			})
+		} else {
+			const serverid = util.returnServerId(channelID)
+
+			bot.sendMessage({
+				to: param,
+				message: `${user} kicked you from ${bot.servers[serverid].name}.`
+			})
+
+			//TODO fix: after kicking user, he's still true in server members' list while bot does not reconnect (manually restart server)
+			bot.kick({
+				serverID: serverid,
+				userID: param
+			})
+		}
+	},
+
+	members: ({ channelID, userID }) => {
+		const botEmoji = ":robot:"
+		const personEmoji = ":bust_in_silhouette:"
+
 		let res = ""
 
 		for (const member in bot.users) {
@@ -68,20 +156,17 @@ const botFuncs = {
 
 			const username = user.username
 
-			const botEmoji = ":robot:"
-			const personEmoji = ":bust_in_silhouette:"
-
 			res += `${user.bot ? botEmoji : personEmoji} ${username}\n\n`
 		}
 
 		bot.sendMessage({
 			to: channelID,
+			message: `<@${userID}>`,
 			embed: {
-				color: 7419530,
-				description: `<@${userID}>`,
+				color: 22679,
 				fields: [
 					{
-						name: "Users",
+						name: "Members:",
 						value: res
 					}
 				]
@@ -89,18 +174,19 @@ const botFuncs = {
 		})
 	},
 
-	prefix: ({ msgString, channelID, userID }) => {
-		const serverid = util.returnServerId(channelID)
+	prefix: ({ param, channelID, userID, prefix, event: { d } }) => {
+		const server_id = util.returnServerId(channelID)
+		const owner_id = util.returnOwnerId(channelID)
 
-		if (util.checkHighRole(serverid, userID)) {
-			if (msgString.length == 1) {
-				const sufix = {
-					ignite: msgString
+		if (util.checkHighRole(server_id, userID) || userID == owner_id) {
+			if (param.length == 1) {
+				const prefix = {
+					ignite: param
 				}
 
 				fs.writeFile(
 					"./src/JSON/ignite.json",
-					JSON.stringify(sufix),
+					JSON.stringify(prefix),
 					error => {
 						if (error) return
 					}
@@ -108,55 +194,45 @@ const botFuncs = {
 
 				bot.sendMessage({
 					to: channelID,
-					embed: {
-						color: 7419530,
-						description: `<@${userID}>`,
-						fields: [
-							{
-								name: "---",
-								value: `Prefix changed to ${msgString}`
-							}
-						]
-					}
+					message: `:white_check_mark: | <@${userID}> Prefix changed to ${"`"}${param}${"`"}`
+				})
+			} else if (param.length == 0) {
+				bot.sendMessage({
+					to: channelID,
+					message: `<@${userID}>`,
+					embed: util.returnHelpEmbed({
+						prefix,
+						command: "prefix",
+						description: "Changes the prefix used to summon Laveo.",
+						message: "<new prefix>",
+						example: "!",
+						author: {
+							username: d.author.username,
+							discriminator: d.author.discriminator,
+							avatar: d.author.avatar,
+							id: d.author.id
+						}
+					})
 				})
 			} else {
 				bot.sendMessage({
 					to: channelID,
-					embed: {
-						color: 7419530,
-						description: `<@${userID}>`,
-						fields: [
-							{
-								name: "---",
-								value: "Prefix length must equal to 1."
-							}
-						]
-					}
+					message: `:warning:| <@${userID}> Prefix length must equal 1.`
 				})
 			}
 		} else {
 			bot.sendMessage({
 				to: channelID,
-				embed: {
-					color: 7419530,
-					description: `<@${userID}>`,
-					fields: [
-						{
-							name: "---",
-							value:
-								"You do not have permission to change the prefix."
-						}
-					]
-				}
+				message: `:x: | <@${userID}> You do not have permission to change the prefix.`
 			})
 		}
 	},
 
-	serverInfo: ({ channelID }) => {
+	serverinfo: ({ channelID, userID }) => {
 		const bots = util.returnBotCount()
-		const serverid = util.returnServerId(channelID)
+		const server_id = util.returnServerId(channelID)
+		const server = bot.servers[server_id]
 		const joiningTime = server.joined_at.substring(0, 10)
-		const server = bot.servers[serverid]
 
 		const info = {
 			name: server.name,
@@ -167,8 +243,9 @@ const botFuncs = {
 
 		bot.sendMessage({
 			to: channelID,
+			message: `<@${userID}>`,
 			embed: {
-				color: 7419530,
+				color: 22679,
 				title: ":robot: " + info.name.toUpperCase(),
 				fields: [
 					{
@@ -191,41 +268,32 @@ const botFuncs = {
 	},
 
 	join: ({ channelID, userID }) => {
-		const serverid = util.returnServerId(channelID)
+		const server_id = util.returnServerId(channelID)
 
-		if (!util.checkVerification(serverid, userID)) {
+		if (!util.checkVerification(server_id, userID)) {
 			bot.addToRole({
-				serverID: serverid,
+				serverID: server_id,
 				userID,
 				roleID: "670255661686325251"
 			})
 
 			bot.removeFromRole({
-				serverID: serverid,
+				serverID: server_id,
 				userID,
 				roleID: "670256462731280394"
 			})
 		} else {
 			bot.sendMessage({
 				to: channelID,
-				embed: {
-					color: 7419530,
-					description: `<@${userID}>`,
-					fields: [
-						{
-							name: "---",
-							value: "You're already verified."
-						}
-					]
-				}
+				message: `| <@${userID}> You're already verified.`
 			})
 		}
 	},
 
-	github: async ({ channelID, msgString }) => {
+	github: async ({ channelID, param, userID, prefix, event: { d } }) => {
 		try {
 			const apiResponse = await axios.get(
-				`https://api.github.com/users/${msgString}`
+				`https://api.github.com/users/${param}`
 			)
 
 			const { name = login, bio, html_url, avatar_url } = apiResponse.data
@@ -233,7 +301,7 @@ const botFuncs = {
 			bot.sendMessage({
 				to: channelID,
 				embed: {
-					color: 7419530,
+					color: 22679,
 					title: "Github profile",
 					url: html_url,
 					fields: [
@@ -260,14 +328,134 @@ const botFuncs = {
 				}
 			})
 		} catch (error) {
+			if (param.length == 0) {
+				bot.sendMessage({
+					to: channelID,
+					message: `<@${userID}>`,
+					embed: util.returnHelpEmbed({
+						prefix,
+						command: "github",
+						description: "Returns some github info of a user.",
+						message: "<github username>",
+						example: "rasteli",
+						author: {
+							username: d.author.username,
+							discriminator: d.author.discriminator,
+							avatar: d.author.avatar,
+							id: d.author.id
+						}
+					})
+				})
+			} else {
+				bot.sendMessage({
+					to: channelID,
+					message: `:x: | <@${userID}> User ${"`"}${param}${"`"} not found.`
+				})
+			}
+		}
+	},
+
+	addrole: ({ param, userID, channelID, prefix, event: { d } }) => {
+		const server_id = util.returnServerId(channelID)
+		const owner_id = util.returnOwnerId(channelID)
+
+		if (util.checkHighRole(server_id, userID) || userID == owner_id) {
+			if (param.length != 0) {
+				const path = "./src/JSON/roles.json"
+
+				fs.readFile(path, "utf-8", (error, data) => {
+					// if (error) return
+
+					const serverRoles = bot.servers[server_id].roles
+					const roleInfo = param.split(" ")
+
+					if (!roleInfo[2]) roleInfo[2] = "false"
+
+					const name = roleInfo[0]
+					const id = roleInfo[1]
+					const highrole = roleInfo[2]
+
+					let role404 = 0
+
+					for (const role_id in serverRoles) {
+						if (id !== role_id) role404++
+					}
+
+					if (role404 === Object.keys(serverRoles).length) {
+						bot.sendMessage({
+							to: channelID,
+							message: `:x: | <@${userID}> Role ${"`"}${name}${"`"} doesn't exist on this server.`
+						})
+
+						return
+					}
+
+					const json = JSON.parse(data)
+
+					for (const rol in json.roles) {
+						const role = json.roles[rol]
+
+						if (id === role.id) {
+							bot.sendMessage({
+								to: channelID,
+								message: `:x: | <@${userID}> Role previously added with name <@&${role.id}>`
+							})
+
+							return
+						}
+					}
+
+					json.roles.push({
+						name,
+						id,
+						highrole
+					})
+
+					const role = {
+						roles: json.roles
+					}
+
+					fs.writeFile(path, JSON.stringify(role), error => {
+						bot.sendMessage({
+							to: channelID,
+							message: `:white_check_mark: | <@${userID}> Role <@&${id}> added successfully to bot's list.`
+						})
+					})
+				})
+			} else {
+				bot.sendMessage({
+					to: channelID,
+					message: `<@${userID}>`,
+					embed: util.returnHelpEmbed({
+						prefix,
+						command: "addrole",
+						description:
+							"Add a server's role to bot's list.\n*It is recommended that, if you created an adm, or owner, or a high-permission role, [high role] be set as true.*",
+						message: "<role name> <role id> [high role]",
+						example: "role1 1234567890 true",
+						author: {
+							username: d.author.username,
+							discriminator: d.author.discriminator,
+							avatar: d.author.avatar,
+							id: d.author.id
+						}
+					})
+				})
+			}
+		} else {
 			bot.sendMessage({
 				to: channelID,
-				embed: {
-					color: 7419530,
-					description: "User not found."
-				}
+				message: `:x: | <@${userID}> You do not have permission to add a role to bot's list.`
 			})
 		}
+	},
+
+	connect: ({ userID, channelID }) => {
+		util.joinAndLeaveVoiceChannel(channelID, userID, "join")
+	},
+
+	disconnect: ({ channelID }) => {
+		util.joinAndLeaveVoiceChannel(channelID, bot.id, "leave")
 	}
 }
 
