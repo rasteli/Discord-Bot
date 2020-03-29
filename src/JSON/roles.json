@@ -1,0 +1,10 @@
+{
+	"roles": [
+		{ "name": "OWNER", "id": "670254979906404402", "highrole": "true" },
+		{ "name": "MODERATOR", "id": "670255185267916810", "highrole": "true" },
+		{ "name": "BOT", "id": "670255726186201119", "highrole": "false" },
+		{ "name": "VERIFIED", "id": "670255661686325251", "highrole": "false" },
+		{ "name": "UNKNOWN", "id": "670256462731280394", "highrole": "false" },
+		{ "name": "everyone", "id": "670254632475557901", "highrole": "false" }
+	]
+}
