@@ -1,10 +1,11 @@
 const fs = require("fs")
 const { bot } = require("../bot.js")
 
-const path = "./src/JSON/roles.json"
+const ROLES_PATH = "./src/JSON/roles.json"
+
 const roles = []
 
-fs.readFile(path, "utf-8", (error, data) => {
+fs.readFile(ROLES_PATH, "utf-8", (error, data) => {
     const json = JSON.parse(data)
 
     for (role in json.roles) {

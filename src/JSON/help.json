@@ -2,73 +2,99 @@
     "title": "Laveo's Commands List",
     "help": [
         {
-            "name": "` flags `",
-            "value": "The way to use flags (< >, [])."
+            "name": "`flags`",
+            "value": "The way to use flags (< >, []).",
+            "inline": true
         },
 
         {
-            "name": "` say `",
-            "value": "Makes Laveo say something."
+            "name": "`say`",
+            "value": "Makes Laveo say something.",
+            "inline": true
         },
 
         {
-            "name": "` commands `",
-            "value": "You already know its purpose."
+            "name": "`commands`",
+            "value": "You already know its purpose.",
+            "inline": true
         },
 
         {
-            "name": "` members `",
-            "value": "Returns all server users."
+            "name": "`members`",
+            "value": "Returns all server members.",
+            "inline": true
         },
 
         {
-            "name": "` serverinfo `",
-            "value": "Returns current server info."
+            "name": "`serverinfo`",
+            "value": "Returns information of the server.",
+            "inline": true
         },
 
         {
-            "name": "` github `",
-            "value": "Returns the user's github profile link."
+            "name": "`github`",
+            "value": "Returns the github profile link of a user.",
+            "inline": true
         },
 
         {
-            "name": "` kick `",
-            "value": "Kicks some shity boi!"
+            "name": "`kick`",
+            "value": "Kicks some shity boi!",
+            "inline": true
         },
 
         {
-            "name": "` msgme `",
-            "value": "Returns a message to user's DM."
+            "name": "`msgme`",
+            "value": "Sends a message to user's DM.",
+            "inline": true
         },
 
         {
-            "name": "` prefix `",
-            "value": "Changes the prefix used to summon Laveo."
+            "name": "`prefix`",
+            "value": "Changes the prefix used to summon Laveo.",
+            "inline": true
         },
 
         {
-            "name": "` addrole `",
-            "value": "Adds a server's role to bot's list."
+            "name": "`addrole`",
+            "value": "Adds a role to bot's list.",
+            "inline": true
         },
 
         {
-            "name": "` connect `",
-            "value": "Adds Laveo to a voice channel."
+            "name": "`connect`",
+            "value": "Adds Laveo to a voice channel.",
+            "inline": true
         },
 
         {
-            "name": "` disconnect `",
-            "value": "Removes Laveo from a voice channel."
+            "name": "`disconnect`",
+            "value": "Removes Laveo from a voice channel.",
+            "inline": true
         },
 
         {
-            "name": "` js `",
-            "value": "Executes and outputs JavaScript code."
+            "name": "`js`",
+            "value": "Executes and outputs JavaScript code.",
+            "inline": true
         },
 
         {
-            "name": "` avatar `",
-            "value": "Returns a user's profile picture."
+            "name": "`avatar`",
+            "value": "Returns the profile picture of a user.",
+            "inline": true
+        },
+
+        {
+            "name": "`userinfo`",
+            "value": "Returns information of a user.",
+            "inline": true
+        },
+
+        {
+            "name": "`botinfo`",
+            "value": "Returns information of Laveo.",
+            "inline": true
         }
     ]
 }

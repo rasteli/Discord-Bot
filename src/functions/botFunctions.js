@@ -622,6 +622,67 @@ const botFuncs = {
             },
         })
     },
+
+    botinfo: ({ channelID, prefix }) => {
+        fs.readFile("./src/JSON/help.json", (error, data) => {
+            if (error) throw error
+
+            const cmds = JSON.parse(data).help
+
+            const cmdsArray = []
+
+            for (const cmd in cmds) {
+                cmdsArray.push(cmds[cmd].name)
+            }
+
+            const {
+                username,
+                avatar,
+                internals: { oauth },
+            } = bot
+
+            const botAvatarURL = util.returnAvatarURL(oauth.id, avatar)
+
+            const INVITE_URL =
+                "https://discord.com/api/oauth2/authorize?client_id=669224162405122059&permissions=0&redirect_uri=http%3A%2F%2F192.168.0.103%3A3333%2Flogin&scope=bot"
+
+            bot.sendMessage({
+                to: channelID,
+                embed: {
+                    color: 22679,
+                    description: oauth.description,
+                    author: {
+                        name: username,
+                        icon_url: botAvatarURL,
+                    },
+                    thumbnail: {
+                        url: botAvatarURL,
+                    },
+                    fields: [
+                        {
+                            name: "\u00bb # Prefix:",
+                            value: `${"`"}${prefix}${"`"}`,
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :incoming_envelope: Invite:",
+                            value: `[Click here](${INVITE_URL})`,
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :man_guard: Creator:",
+                            value: `${"`"}${oauth.owner.username}${"`"}`,
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :scroll: Commands:",
+                            value: cmdsArray.join(" "),
+                        },
+                    ],
+                },
+            })
+        })
+    },
 }
 
 module.exports = {
