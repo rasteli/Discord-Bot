@@ -227,43 +227,81 @@ const botFuncs = {
             })
         }
     },
-    //! CMD NOT FINISHED
+
     serverinfo: ({ channelID, userID }) => {
         const bots = util.returnBotCount()
         const server_id = util.returnServerId(channelID)
-        const server = bot.servers[server_id]
-        const joiningTime = server.joined_at.substring(0, 10)
 
-        const info = {
-            name: server.name,
-            id: server.id,
-            memberCount: server.member_count - bots,
-            joiningTime,
-        }
+        fs.readFile("./src/JSON/roles.json", (error, data) => {
+            if (error) throw error
 
-        bot.sendMessage({
-            to: channelID,
-            message: `<@${userID}>`,
-            embed: {
-                color: 22679,
-                title: ":robot: " + info.name.toUpperCase(),
-                fields: [
-                    {
-                        name: ":computer: ID",
-                        value: info.id,
+            const roles = JSON.parse(data).roles
+
+            const {
+                name,
+                id,
+                owner_id,
+                region,
+                icon,
+                member_count,
+            } = bot.servers[server_id]
+
+            const members = member_count - bots
+            const rolesMention = []
+
+            for (const role in roles) {
+                roles[role].id = `<@&${roles[role].id}>`
+
+                rolesMention.push(roles[role].id)
+            }
+
+            const creationDate = new Date("2020-01-24T13:12:37.111Z")
+            const daysOnline = util.returnPassedDays("2020-01-24T13:12:37.111Z")
+
+            bot.sendMessage({
+                to: channelID,
+                embed: {
+                    color: 22679,
+                    title: ":computer: " + name.toUpperCase(),
+                    thumbnail: {
+                        url: `https://cdn.discordapp.com/icons/${id}/${icon}`,
                     },
-
-                    {
-                        name: ":busts_in_silhouette: Member count",
-                        value: info.memberCount + " users\n" + bots + " bots",
-                    },
-
-                    {
-                        name: ":timer: Laveo joined at",
-                        value: info.joiningTime,
-                    },
-                ],
-            },
+                    fields: [
+                        {
+                            name: "\u00bb :file_folder: ID:",
+                            value: id,
+                        },
+                        {
+                            name: "\u00bb :busts_in_silhouette: Members:",
+                            value: members + " users\n" + bots + " bots",
+                        },
+                        {
+                            name: "\u00bb :calendar: Created at:",
+                            value: creationDate.toDateString(),
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :man_guard: Owner:",
+                            value: `<@${owner_id}>`,
+                            inline: true,
+                        },
+                        {
+                            name: `:flag_${region.substring(0, 2)}: Region:`,
+                            value: region.toUpperCase(),
+                            inline: true,
+                        },
+                        {
+                            name: `:calendar: Days online:`,
+                            value: `${daysOnline} days`,
+                            inline: true,
+                        },
+                        {
+                            name: ":scroll: Roles:",
+                            value: rolesMention.join(" "),
+                        },
+                    ],
+                },
+            })
         })
     },
 
@@ -522,7 +560,7 @@ const botFuncs = {
 
         const ID = param.length === 0 ? d.author.id : param
 
-        const { nick, id, joined_at, status = "offline", roles } = bot.servers[
+        const { id, joined_at, status = "offline", roles } = bot.servers[
             server_id
         ].members[ID]
 
@@ -534,11 +572,8 @@ const botFuncs = {
             roles[role] = `<@&${roles[role]}>`
         }
 
-        const todayDate = new Date().getTime()
         const joiningDate = new Date(joined_at)
-        const differenceInTime = todayDate - joiningDate.getTime()
-        const differenceInDays = differenceInTime / (1000 * 3600 * 24)
-        const daysInServer = Math.round(differenceInDays)
+        const daysInServer = util.returnPassedDays(joined_at)
 
         bot.sendMessage({
             to: channelID,
@@ -551,7 +586,7 @@ const botFuncs = {
                 fields: [
                     {
                         name: "\u00bb :file_folder: ID:",
-                        value: `${id}`,
+                        value: id,
                     },
                     {
                         name: "\u00bb :bust_in_silhouette: User:",
@@ -560,17 +595,17 @@ const botFuncs = {
                     },
                     {
                         name: "\u00bb :pencil2: Nickname:",
-                        value: `${nick}`,
+                        value: `<@${id}>`,
                         inline: true,
                     },
                     {
                         name: "\u00bb :vertical_traffic_light: Status:",
-                        value: `${status}`,
+                        value: status,
                         inline: true,
                     },
                     {
                         name: "\u00bb :calendar: Joined at:",
-                        value: `${joiningDate.toDateString()}`,
+                        value: joiningDate.toDateString(),
                         inline: true,
                     },
                     {

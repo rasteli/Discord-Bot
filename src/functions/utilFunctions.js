@@ -173,6 +173,16 @@ function returnAvatarMessage({ user, author, channelID }) {
     }
 }
 
+function returnPassedDays(formerDate) {
+    const todayDate = new Date().getTime()
+    const pastDate = new Date(formerDate).getTime()
+
+    const differenceInTime = todayDate - pastDate
+    const differenceInDays = differenceInTime / (3600000 * 24)
+
+    return Math.round(differenceInDays)
+}
+
 module.exports = {
     returnServerId,
     checkHighRole,
@@ -183,4 +193,5 @@ module.exports = {
     joinAndLeaveVoiceChannel,
     returnAvatarMessage,
     returnAvatarURL,
+    returnPassedDays,
 }
