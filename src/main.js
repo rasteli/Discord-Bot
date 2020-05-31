@@ -24,14 +24,6 @@ bot.on("ready", () => {
                 },
             },
         })
-        // const date = new Date(
-        //     bot.servers["670254632475557901"].members[
-        //         "559152144587161620"
-        //     ].joined_at
-        // )
-
-        // console.log(date.toDateString().split(" "))
-        // console.log(bot.servers["670254632475557901"].members)
     }
 })
 
