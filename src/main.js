@@ -27,10 +27,9 @@ bot.on("ready", () => {
     }
 })
 
-//TODO find a way to add the serverID dynamically if there is any
 bot.on("guildMemberAdd", (member) => {
     bot.addToRole({
-        serverID: "670254632475557901", //** ServerID */
+        serverID: "670254632475557901",
         userID: member.id,
         roleID: "670256462731280394",
     })
