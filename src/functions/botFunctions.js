@@ -246,8 +246,9 @@ const botFuncs = {
                 member_count,
             } = bot.servers[server_id]
 
-            const members = member_count - bots
             const rolesMention = []
+            const members = member_count - bots
+            const botAvatarURL = `https://cdn.discordapp.com/icons/${id}/${icon}`
 
             for (const role in roles) {
                 roles[role].id = `<@&${roles[role].id}>`
@@ -262,9 +263,12 @@ const botFuncs = {
                 to: channelID,
                 embed: {
                     color: 22679,
-                    title: ":computer: " + name.toUpperCase(),
+                    author: {
+                        name: name.toUpperCase(),
+                        icon_url: botAvatarURL,
+                    },
                     thumbnail: {
-                        url: `https://cdn.discordapp.com/icons/${id}/${icon}`,
+                        url: botAvatarURL,
                     },
                     fields: [
                         {
@@ -670,7 +674,7 @@ const botFuncs = {
                             inline: true,
                         },
                         {
-                            name: "\u00bb :man_guard: Creator:",
+                            name: "\u00bb :man_guard: Developer:",
                             value: `${"`"}${oauth.owner.username}${"`"}`,
                             inline: true,
                         },
