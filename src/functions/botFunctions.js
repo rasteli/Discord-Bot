@@ -496,14 +496,14 @@ const botFuncs = {
         util.joinAndLeaveVoiceChannel(channelID, bot.id, "leave")
     },
 
-    js: ({ channelID, userID, param, prefix, event: { d } }) => {
+    eval: ({ channelID, userID, param, prefix, event: { d } }) => {
         if (param.length === 0) {
             bot.sendMessage({
                 to: channelID,
                 message: `<@${userID}>`,
                 embed: util.returnHelpEmbed({
                     prefix,
-                    command: "js",
+                    command: "eval",
                     description: "Executes a JavaScript code.",
                     message: "<code>",
                     example: "'Leak'.split('').reverse().join('')",
