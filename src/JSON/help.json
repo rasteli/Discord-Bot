@@ -26,12 +26,6 @@
         },
 
         {
-            "name": "`serverinfo`",
-            "value": "Returns information of the server.",
-            "inline": true
-        },
-
-        {
             "name": "`github`",
             "value": "Returns the github profile link of a user.",
             "inline": true
@@ -82,6 +76,12 @@
         {
             "name": "`avatar`",
             "value": "Returns the profile picture of a user.",
+            "inline": true
+        },
+
+        {
+            "name": "`serverinfo`",
+            "value": "Returns information of the server.",
             "inline": true
         },
 

@@ -228,87 +228,6 @@ const botFuncs = {
         }
     },
 
-    serverinfo: ({ channelID, userID }) => {
-        const bots = util.returnBotCount()
-        const server_id = util.returnServerId(channelID)
-
-        fs.readFile("./src/JSON/roles.json", (error, data) => {
-            if (error) throw error
-
-            const roles = JSON.parse(data).roles
-
-            const {
-                name,
-                id,
-                owner_id,
-                region,
-                icon,
-                member_count,
-            } = bot.servers[server_id]
-
-            const rolesMention = []
-            const members = member_count - bots
-            const botAvatarURL = `https://cdn.discordapp.com/icons/${id}/${icon}`
-
-            for (const role in roles) {
-                roles[role].id = `<@&${roles[role].id}>`
-
-                rolesMention.push(roles[role].id)
-            }
-
-            const creationDate = new Date("2020-01-24T13:12:37.111Z")
-            const daysOnline = util.returnPassedDays("2020-01-24T13:12:37.111Z")
-
-            bot.sendMessage({
-                to: channelID,
-                embed: {
-                    color: 22679,
-                    author: {
-                        name: name.toUpperCase(),
-                        icon_url: botAvatarURL,
-                    },
-                    thumbnail: {
-                        url: botAvatarURL,
-                    },
-                    fields: [
-                        {
-                            name: "\u00bb :file_folder: ID:",
-                            value: id,
-                        },
-                        {
-                            name: "\u00bb :busts_in_silhouette: Members:",
-                            value: members + " users\n" + bots + " bots",
-                        },
-                        {
-                            name: "\u00bb :calendar: Created at:",
-                            value: creationDate.toDateString(),
-                            inline: true,
-                        },
-                        {
-                            name: "\u00bb :man_guard: Owner:",
-                            value: `<@${owner_id}>`,
-                            inline: true,
-                        },
-                        {
-                            name: `:flag_${region.substring(0, 2)}: Region:`,
-                            value: region.toUpperCase(),
-                            inline: true,
-                        },
-                        {
-                            name: `:calendar: Days online:`,
-                            value: `${daysOnline} days`,
-                            inline: true,
-                        },
-                        {
-                            name: ":scroll: Roles:",
-                            value: rolesMention.join(" "),
-                        },
-                    ],
-                },
-            })
-        })
-    },
-
     join: ({ channelID, userID }) => {
         const server_id = util.returnServerId(channelID)
 
@@ -553,6 +472,87 @@ const botFuncs = {
 
             bot.sendMessage(avatarMessage)
         }
+    },
+
+    serverinfo: ({ channelID, userID }) => {
+        const bots = util.returnBotCount()
+        const server_id = util.returnServerId(channelID)
+
+        fs.readFile("./src/JSON/roles.json", (error, data) => {
+            if (error) throw error
+
+            const roles = JSON.parse(data).roles
+
+            const {
+                name,
+                id,
+                owner_id,
+                region,
+                icon,
+                member_count,
+            } = bot.servers[server_id]
+
+            const rolesMention = []
+            const members = member_count - bots
+            const botAvatarURL = `https://cdn.discordapp.com/icons/${id}/${icon}`
+
+            for (const role in roles) {
+                roles[role].id = `<@&${roles[role].id}>`
+
+                rolesMention.push(roles[role].id)
+            }
+
+            const creationDate = new Date("2020-01-24T13:12:37.111Z")
+            const daysOnline = util.returnPassedDays("2020-01-24T13:12:37.111Z")
+
+            bot.sendMessage({
+                to: channelID,
+                embed: {
+                    color: 22679,
+                    author: {
+                        name: name.toUpperCase(),
+                        icon_url: botAvatarURL,
+                    },
+                    thumbnail: {
+                        url: botAvatarURL,
+                    },
+                    fields: [
+                        {
+                            name: "\u00bb :file_folder: ID:",
+                            value: id,
+                        },
+                        {
+                            name: "\u00bb :busts_in_silhouette: Members:",
+                            value: members + " users\n" + bots + " bots",
+                        },
+                        {
+                            name: "\u00bb :calendar: Created at:",
+                            value: creationDate.toDateString(),
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :man_guard: Owner:",
+                            value: `<@${owner_id}>`,
+                            inline: true,
+                        },
+                        {
+                            name: `:flag_${region.substring(0, 2)}: Region:`,
+                            value: region.toUpperCase(),
+                            inline: true,
+                        },
+                        {
+                            name: `:calendar: Days online:`,
+                            value: `${daysOnline} days`,
+                            inline: true,
+                        },
+                        {
+                            name: ":scroll: Roles:",
+                            value: rolesMention.join(" "),
+                        },
+                    ],
+                },
+            })
+        })
     },
 
     userinfo: ({ param, channelID, event: { d } }) => {
