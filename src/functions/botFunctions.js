@@ -687,6 +687,86 @@ const botFuncs = {
             })
         })
     },
+
+    weather: async ({ param, channelID, userID, prefix, event: { d } }) => {
+        if (param.length === 0) {
+            bot.sendMessage({
+                to: channelID,
+                message: `<@${userID}>`,
+                embed: util.returnHelpEmbed({
+                    prefix,
+                    command: "weather",
+                    description: "Returns information about a city's weather.",
+                    message: "<city>",
+                    example: "Ottawa",
+                    author: {
+                        username: d.author.username,
+                        discriminator: d.author.discriminator,
+                        avatar: d.author.avatar,
+                        id: d.author.id,
+                    },
+                }),
+            })
+        } else {
+            const API_KEY = "JAKVE4aE0ZejGixp1Al1c8kCH4DnUP5P"
+
+            const locationResponse = await axios.get(
+                `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${API_KEY}&q=${param}`
+            )
+
+            const currentWeatherResponse = await axios.get(
+                `http://dataservice.accuweather.com/currentconditions/v1/${locationKey}?apikey=${API_KEY}`
+            )
+
+            const locationKey = locationResponse.data[0].Key
+
+            const {
+                EnglishName,
+                Country: { EnglishName: CountryName },
+                AdministrativeArea: { ID },
+            } = locationResponse.data[0]
+
+            const {
+                WeatherText,
+                WeatherIcon,
+                IsDayTime,
+                Temperature: {
+                    Metric: { Value },
+                },
+            } = currentWeatherResponse.data[0]
+
+            const usedIsDayTime = IsDayTime ? "Day Time" : "Night Time"
+
+            const usedWeatherIcon =
+                WeatherIcon < 10 ? `0${WeatherIcon}` : WeatherIcon
+
+            bot.sendMessage({
+                to: channelID,
+                embed: {
+                    color: 22769,
+                    title: WeatherText,
+                    author: {
+                        name: `${EnglishName}-${ID}, ${CountryName}`,
+                        icon_url:
+                            "https://marisundvoll.weebly.com/uploads/4/5/5/2/45527563/8995703_orig.jpg",
+                    },
+                    fields: [
+                        {
+                            name: "▬▬▬▬▬▬",
+                            value: usedIsDayTime,
+                        },
+                        {
+                            name: "Temperature",
+                            value: Math.round(Value) + "°C",
+                        },
+                    ],
+                    thumbnail: {
+                        url: `https://developer.accuweather.com/sites/default/files/${usedWeatherIcon}-s.png?size=1024x1024`,
+                    },
+                },
+            })
+        }
+    },
 }
 
 module.exports = {

@@ -95,6 +95,11 @@
             "name": "`botinfo`",
             "value": "Returns information of Laveo.",
             "inline": true
+        },
+
+        {
+            "name": "`weather`",
+            "value": "Returns information about a city's weather."
         }
     ]
 }
