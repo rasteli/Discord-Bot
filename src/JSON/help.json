@@ -8,7 +8,7 @@
         },
 
         {
-            "name": "`say`",
+            "name": "*`say`",
             "value": "Makes Laveo say something.",
             "inline": true
         },
@@ -26,31 +26,31 @@
         },
 
         {
-            "name": "`github`",
+            "name": "*`github`",
             "value": "Returns the github profile link of a user.",
             "inline": true
         },
 
         {
-            "name": "`kick`",
+            "name": "*`kick`",
             "value": "Kicks some shity boi!",
             "inline": true
         },
 
         {
-            "name": "`msgme`",
+            "name": "*`msgme`",
             "value": "Sends a message to user's DM.",
             "inline": true
         },
 
         {
-            "name": "`prefix`",
+            "name": "*`prefix`",
             "value": "Changes the prefix used to summon Laveo.",
             "inline": true
         },
 
         {
-            "name": "`addrole`",
+            "name": "*`addrole`",
             "value": "Adds a role to bot's list.",
             "inline": true
         },
@@ -68,13 +68,13 @@
         },
 
         {
-            "name": "`eval`",
+            "name": "*`eval`",
             "value": "Executes and outputs JavaScript code.",
             "inline": true
         },
 
         {
-            "name": "`avatar`",
+            "name": "*`avatar`",
             "value": "Returns the profile picture of a user.",
             "inline": true
         },
@@ -86,7 +86,7 @@
         },
 
         {
-            "name": "`userinfo`",
+            "name": "*`userinfo`",
             "value": "Returns information of a user.",
             "inline": true
         },
@@ -98,7 +98,7 @@
         },
 
         {
-            "name": "`weather`",
+            "name": "*`weather`",
             "value": "Returns information about a city's weather."
         }
     ]

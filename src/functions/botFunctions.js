@@ -57,7 +57,7 @@ const botFuncs = {
     },
 
     say: ({ userID, channelID, param, prefix, event: { d } }) => {
-        if (param.length == 0) {
+        if (param === "help") {
             bot.sendMessage({
                 to: channelID,
                 message: `<@${userID}>`,
@@ -84,7 +84,7 @@ const botFuncs = {
     },
 
     msgme: ({ param, userID, channelID, prefix, event: { d } }) => {
-        if (param.length == 0) {
+        if (param === "help") {
             bot.sendMessage({
                 to: channelID,
                 message: `<@${userID}>`,
@@ -111,7 +111,7 @@ const botFuncs = {
     },
 
     kick: ({ userID, channelID, param, user, prefix, event: { d } }) => {
-        if (param.length == 0) {
+        if (param === "help") {
             bot.sendMessage({
                 to: channelID,
                 message: `<@${userID}>`,
@@ -129,7 +129,7 @@ const botFuncs = {
                     },
                 }),
             })
-        } else {
+        } else if (param.length !== 0) {
             const serverid = util.returnServerId(channelID)
 
             bot.sendMessage({
@@ -196,7 +196,7 @@ const botFuncs = {
                     to: channelID,
                     message: `:white_check_mark: | <@${userID}> Prefix changed to ${"`"}${param}${"`"}`,
                 })
-            } else if (param.length == 0) {
+            } else if (param === "help") {
                 bot.sendMessage({
                     to: channelID,
                     message: `<@${userID}>`,
@@ -289,7 +289,7 @@ const botFuncs = {
                 },
             })
         } catch (error) {
-            if (param.length === 0) {
+            if (param === "help") {
                 bot.sendMessage({
                     to: channelID,
                     message: `<@${userID}>`,
@@ -307,7 +307,7 @@ const botFuncs = {
                         },
                     }),
                 })
-            } else {
+            } else if (param.length !== 0) {
                 bot.sendMessage({
                     to: channelID,
                     message: `:x: | <@${userID}> User ${"`"}${param}${"`"} not found.`,
@@ -321,7 +321,26 @@ const botFuncs = {
         const owner_id = util.returnOwnerId(channelID)
 
         if (util.checkHighRole(server_id, userID) || userID == owner_id) {
-            if (param.length != 0) {
+            if (param === "help") {
+                bot.sendMessage({
+                    to: channelID,
+                    message: `<@${userID}>`,
+                    embed: util.returnHelpEmbed({
+                        prefix,
+                        command: "addrole",
+                        description:
+                            "Add a server's role to bot's list.\n*It is recommended that, if you created an adm, or owner, or a high-permission role, [high role] be set as true.*",
+                        message: "<role name> <role id> [high role]",
+                        example: "role1 1234567890 true",
+                        author: {
+                            username: d.author.username,
+                            discriminator: d.author.discriminator,
+                            avatar: d.author.avatar,
+                            id: d.author.id,
+                        },
+                    }),
+                })
+            } else if (param.length !== 0) {
                 const path = "./src/JSON/roles.json"
 
                 fs.readFile(path, "utf-8", (error, data) => {
@@ -383,25 +402,6 @@ const botFuncs = {
                         })
                     })
                 })
-            } else {
-                bot.sendMessage({
-                    to: channelID,
-                    message: `<@${userID}>`,
-                    embed: util.returnHelpEmbed({
-                        prefix,
-                        command: "addrole",
-                        description:
-                            "Add a server's role to bot's list.\n*It is recommended that, if you created an adm, or owner, or a high-permission role, [high role] be set as true.*",
-                        message: "<role name> <role id> [high role]",
-                        example: "role1 1234567890 true",
-                        author: {
-                            username: d.author.username,
-                            discriminator: d.author.discriminator,
-                            avatar: d.author.avatar,
-                            id: d.author.id,
-                        },
-                    }),
-                })
             }
         } else {
             bot.sendMessage({
@@ -420,7 +420,7 @@ const botFuncs = {
     },
 
     eval: ({ channelID, userID, param, prefix, event: { d } }) => {
-        if (param.length === 0) {
+        if (param === "help") {
             bot.sendMessage({
                 to: channelID,
                 message: `<@${userID}>`,
@@ -438,7 +438,7 @@ const botFuncs = {
                     },
                 }),
             })
-        } else {
+        } else if (param.length !== 0) {
             const stringCode = eval(param)
 
             bot.sendMessage({
@@ -448,8 +448,26 @@ const botFuncs = {
         }
     },
 
-    avatar: ({ param, channelID, event: { d } }) => {
-        if (param.length === 0) {
+    avatar: ({ param, channelID, userID, prefix, event: { d } }) => {
+        if (param === "help") {
+            bot.sendMessage({
+                to: channelID,
+                message: `<@${userID}>`,
+                embed: util.returnHelpEmbed({
+                    prefix,
+                    command: "avatar",
+                    description: "Returns the profile picture of a user.",
+                    message: "[user ID] or [@user]",
+                    example: "657329094496616459 or @gabrTeste",
+                    author: {
+                        username: d.author.username,
+                        discriminator: d.author.discriminator,
+                        avatar: d.author.avatar,
+                        id: d.author.id,
+                    },
+                }),
+            })
+        } else if (param.length === 0) {
             const avatarMessage = util.returnAvatarMessage({
                 user: d.author,
                 author: d.author,
@@ -474,7 +492,7 @@ const botFuncs = {
         }
     },
 
-    serverinfo: ({ channelID, userID }) => {
+    serverinfo: ({ channelID }) => {
         const bots = util.returnBotCount()
         const server_id = util.returnServerId(channelID)
 
@@ -555,76 +573,96 @@ const botFuncs = {
         })
     },
 
-    userinfo: ({ param, channelID, event: { d } }) => {
-        if (param.includes("@")) {
-            param = param.replace(/[&\/\\#,+()$~%.'":*?<>{}@!]/g, "")
-        }
+    userinfo: ({ param, channelID, userID, prefix, event: { d } }) => {
+        if (param === "help") {
+            bot.sendMessage({
+                to: channelID,
+                message: `<@${userID}>`,
+                embed: util.returnHelpEmbed({
+                    prefix,
+                    command: "userinfo",
+                    description: "Returns information of a user.",
+                    message: "[user ID] or [@user]",
+                    example: "657329094496616459 or @gabrTeste",
+                    author: {
+                        username: d.author.username,
+                        discriminator: d.author.discriminator,
+                        avatar: d.author.avatar,
+                        id: d.author.id,
+                    },
+                }),
+            })
+        } else {
+            if (param.includes("@")) {
+                param = param.replace(/[&\/\\#,+()$~%.'":*?<>{}@!]/g, "")
+            }
 
-        const server_id = util.returnServerId(channelID)
+            const server_id = util.returnServerId(channelID)
 
-        const ID = param.length === 0 ? d.author.id : param
+            const ID = param.length === 0 ? d.author.id : param
 
-        const { id, joined_at, status = "offline", roles } = bot.servers[
-            server_id
-        ].members[ID]
+            const { id, joined_at, status = "offline", roles } = bot.servers[
+                server_id
+            ].members[ID]
 
-        const { username, discriminator, avatar } = bot.users[ID]
+            const { username, discriminator, avatar } = bot.users[ID]
 
-        const avatar_url = util.returnAvatarURL(ID, avatar)
+            const avatar_url = util.returnAvatarURL(ID, avatar)
 
-        for (const role in roles) {
-            roles[role] = `<@&${roles[role]}>`
-        }
+            for (const role in roles) {
+                roles[role] = `<@&${roles[role]}>`
+            }
 
-        const joiningDate = new Date(joined_at)
-        const daysInServer = util.returnPassedDays(joined_at)
+            const joiningDate = new Date(joined_at)
+            const daysInServer = util.returnPassedDays(joined_at)
 
-        bot.sendMessage({
-            to: channelID,
-            embed: {
-                color: 22679,
-                title: `\u00bb Information about user: ${username}`,
-                thumbnail: {
-                    url: avatar_url,
+            bot.sendMessage({
+                to: channelID,
+                embed: {
+                    color: 22679,
+                    title: `\u00bb Information about user: ${username}`,
+                    thumbnail: {
+                        url: avatar_url,
+                    },
+                    fields: [
+                        {
+                            name: "\u00bb :file_folder: ID:",
+                            value: id,
+                        },
+                        {
+                            name: "\u00bb :bust_in_silhouette: User:",
+                            value: `${username}#${discriminator}`,
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :pencil2: Nickname:",
+                            value: `<@${id}>`,
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :vertical_traffic_light: Status:",
+                            value: status,
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :calendar: Joined at:",
+                            value: joiningDate.toDateString(),
+                            inline: true,
+                        },
+                        {
+                            name: "\u00bb :calendar: Days in server:",
+                            value: `${daysInServer} days`,
+                            inline: true,
+                        },
+                        {
+                            name: `\u00bb :scroll: Roles [${roles.length}]:`,
+                            value: roles.join(" "),
+                            inline: true,
+                        },
+                    ],
                 },
-                fields: [
-                    {
-                        name: "\u00bb :file_folder: ID:",
-                        value: id,
-                    },
-                    {
-                        name: "\u00bb :bust_in_silhouette: User:",
-                        value: `${username}#${discriminator}`,
-                        inline: true,
-                    },
-                    {
-                        name: "\u00bb :pencil2: Nickname:",
-                        value: `<@${id}>`,
-                        inline: true,
-                    },
-                    {
-                        name: "\u00bb :vertical_traffic_light: Status:",
-                        value: status,
-                        inline: true,
-                    },
-                    {
-                        name: "\u00bb :calendar: Joined at:",
-                        value: joiningDate.toDateString(),
-                        inline: true,
-                    },
-                    {
-                        name: "\u00bb :calendar: Days in server:",
-                        value: `${daysInServer} days`,
-                        inline: true,
-                    },
-                    {
-                        name: `\u00bb :scroll: Roles [${roles.length}]:`,
-                        value: roles.join(" "),
-                        inline: true,
-                    },
-                ],
-            },
-        })
+            })
+        }
     },
 
     botinfo: ({ channelID, prefix }) => {
@@ -654,7 +692,7 @@ const botFuncs = {
                 to: channelID,
                 embed: {
                     color: 22679,
-                    description: oauth.description,
+                    description: `Commands with flags are highlighted with a ${"`"}*${"`"} before them. To see how to use them, write ${"`"}${prefix}<command name> help${"`"}.`,
                     author: {
                         name: username,
                         icon_url: botAvatarURL,
@@ -689,7 +727,7 @@ const botFuncs = {
     },
 
     weather: async ({ param, channelID, userID, prefix, event: { d } }) => {
-        if (param.length === 0) {
+        if (param === "help") {
             bot.sendMessage({
                 to: channelID,
                 message: `<@${userID}>`,
@@ -707,18 +745,18 @@ const botFuncs = {
                     },
                 }),
             })
-        } else {
+        } else if (param.length !== 0) {
             const API_KEY = "JAKVE4aE0ZejGixp1Al1c8kCH4DnUP5P"
 
             const locationResponse = await axios.get(
                 `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${API_KEY}&q=${param}`
             )
 
+            const locationKey = locationResponse.data[0].Key
+
             const currentWeatherResponse = await axios.get(
                 `http://dataservice.accuweather.com/currentconditions/v1/${locationKey}?apikey=${API_KEY}`
             )
-
-            const locationKey = locationResponse.data[0].Key
 
             const {
                 EnglishName,
